@@ -1,4 +1,4 @@
-import type { StoredUser } from "@/services/auth/types/auth-types.ts"
+import type { StoredUser } from "@/services/auth/types/authTypes.ts"
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
@@ -57,9 +57,5 @@ export class AuthService {
   async logout() {
     await delay(1000)
     localStorage.removeItem(TOKEN_STORAGE_KEY)
-  }
-
-  getAccessToken(): string | null {
-    return localStorage.getItem(TOKEN_STORAGE_KEY)
   }
 }

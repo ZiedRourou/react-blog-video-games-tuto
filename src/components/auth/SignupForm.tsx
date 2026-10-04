@@ -18,13 +18,13 @@ import * as React from "react"
 import { useAuth } from "@/contexts/AuthContext.tsx"
 
 export function SignupForm() {
+  const register = useAuth()
   type UserRegistration = {
     email: string
     username: string
     password: string
     passwordConfirm: string
   }
-  const register = useAuth()
 
   const [user, setUser] = useState<UserRegistration>({
     email: "",
@@ -40,12 +40,16 @@ export function SignupForm() {
     }))
   }
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     console.log("ici")
     if (user.password === user.passwordConfirm && !!user.password.trim()) {
       console.log("register")
-      register.register(user.email, user.username, user.password)
+      try {
+        await register.register(user.email, user.username, user.password)
+      } catch (e) {
+        console.error(e)
+      }
     }
   }
 

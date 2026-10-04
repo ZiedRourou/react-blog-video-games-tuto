@@ -8,11 +8,6 @@ export type StoredUser = User & {
   password: string
 }
 
-export type AuthResponse = {
-  user: User
-  accessToken: string
-}
-
 export type AuthContextType = {
   user: string | null
   login: (email: string, password: string) => Promise<void>

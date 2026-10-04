@@ -20,12 +20,11 @@ import * as React from "react"
 import { useAuth } from "@/contexts/AuthContext.tsx"
 
 export function LoginForm() {
+  const { login } = useAuth()
   const [user, setUser] = useState({
     email: "",
     password: "",
   })
-
-  const { login } = useAuth()
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUser((prev) => ({
@@ -33,10 +32,14 @@ export function LoginForm() {
       [e.target.name]: e.target.value,
     }))
   }
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    console.log("submit")
-    login(user.email, user.password)
+
+    try {
+      await login(user.email, user.password)
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   return (

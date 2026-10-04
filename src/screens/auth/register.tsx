@@ -1,4 +1,4 @@
-import { SignupForm } from "@/components/auth/signup-form.tsx"
+import { SignupForm } from "@/components/auth/SignupForm.tsx"
 
 export function Register() {
   return (
