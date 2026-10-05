@@ -1,5 +1,7 @@
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { Button } from "@/components/ui/button"
+import TextField from "@/components/inputs/TextField.component"
 import { loginSchema, type LoginValues } from "./login.schema"
 
 const LoginForm = () => {
@@ -16,29 +18,30 @@ const LoginForm = () => {
   const onSubmit = (values: LoginValues) => console.log(values)
 
   return (
-    <div className="login-container">
-      <form onSubmit={handleSubmit(onSubmit)} className="login-form" noValidate>
-        <div className="form-group">
-          <label>pseudo:</label>
-          <input type="email" {...register("username")} />
-          {errors.username && (
-            <p className="error-text" text-red-950>
-              {errors.username.message}
-            </p>
-          )}
-        </div>
-
-        <div className="form-group">
-          <label>Password : </label>
-          <input type="password" {...register("password")} />
-          {errors.password && (
-            <p className="error-text">{errors.password.message}</p>
-          )}
-        </div>
-
-        <button type="submit">Login</button>
-      </form>
-    </div>
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      noValidate
+      className="flex flex-col gap-4"
+    >
+      <TextField
+        id="username"
+        label="Nom d'utilisateur"
+        autoComplete="username"
+        error={errors.username?.message}
+        {...register("username")}
+      />
+      <TextField
+        id="password"
+        type="password"
+        label="Mot de passe"
+        autoComplete="current-password"
+        error={errors.password?.message}
+        {...register("password")}
+      />
+      <Button type="submit" className="w-full">
+        Se connecter
+      </Button>
+    </form>
   )
 }
 
