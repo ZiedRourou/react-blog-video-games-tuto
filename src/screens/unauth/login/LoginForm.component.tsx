@@ -1,100 +1,45 @@
-import { cn } from "cn"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { loginSchema, type LoginValues } from "./login.schema"
 
-import { Button } from "@/components/ui/button.tsx"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card.tsx"
-import {
-  Field,
-  FieldDescription,
-  FieldGroup,
-  FieldLabel,
-} from "@/components/ui/field.tsx"
-import { Input } from "@/components/ui/input.tsx"
-import { useState } from "react"
-import * as React from "react"
-import { useAuth } from "@/contexts/AuthContext.tsx"
-
-export function LoginForm() {
-  const { login } = useAuth()
-  const [user, setUser] = useState({
-    email: "",
-    password: "",
+const LoginForm = () => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginValues>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: { username: "", password: "" },
+    mode: "onTouched",
   })
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setUser((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }))
-  }
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-
-    try {
-      await login(user.email, user.password)
-    } catch (error) {
-      console.log(error)
-    }
-  }
+  const onSubmit = (values: LoginValues) => console.log(values)
 
   return (
-    <div className={cn("flex flex-col gap-6")}>
-      <Card>
-        <CardHeader>
-          <CardTitle>Login to your account</CardTitle>
-          <CardDescription>
-            Enter your email below to login to your account
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit}>
-            <FieldGroup>
-              <Field>
-                <FieldLabel htmlFor="email">Email</FieldLabel>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="m@example.com"
-                  required
-                  value={user.email}
-                  onChange={handleChange}
-                  name="email"
-                />
-              </Field>
-              <Field>
-                <div className="flex items-center">
-                  <FieldLabel htmlFor="password">Password</FieldLabel>
-                  <a
-                    href="#"
-                    className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
-                  >
-                    Forgot your password?
-                  </a>
-                </div>
-                <Input
-                  id="password"
-                  type="password"
-                  value={user.password}
-                  onChange={handleChange}
-                  required
-                  name="password"
-                />
-              </Field>
-              <Field>
-                <Button type="submit">Login</Button>
-                <FieldDescription className="text-center">
-                  Don&apos;t have an account? <a href="/register">Sign up</a>
-                </FieldDescription>
-              </Field>
-            </FieldGroup>
-          </form>
-        </CardContent>
-      </Card>
+    <div className="login-container">
+      <form onSubmit={handleSubmit(onSubmit)} className="login-form" noValidate>
+        <div className="form-group">
+          <label>pseudo:</label>
+          <input type="email" {...register("username")} />
+          {errors.username && (
+            <p className="error-text" text-red-950>
+              {errors.username.message}
+            </p>
+          )}
+        </div>
+
+        <div className="form-group">
+          <label>Password : </label>
+          <input type="password" {...register("password")} />
+          {errors.password && (
+            <p className="error-text">{errors.password.message}</p>
+          )}
+        </div>
+
+        <button type="submit">Login</button>
+      </form>
     </div>
   )
 }
+
+export default LoginForm
