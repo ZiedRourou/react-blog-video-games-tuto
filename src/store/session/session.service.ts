@@ -1,10 +1,14 @@
 import { isAxiosError } from "axios"
 import APIAxios, { APIRoutes, tokenStorage } from "@/api/axios.api"
-import { loginResponseSchema, userSchema } from "@/api/auth.schema"
+import {
+  loginResponseSchema,
+  userSchema,
+  type User,
+} from "@/store/session/session.model"
 
 type Credentials = { username: string; password: string }
 
-export async function login(credentials: Credentials) {
+export async function login(credentials: Credentials): Promise<User> {
   const { data } = await APIAxios({
     ...APIRoutes.POSTLogin(),
     data: credentials,
@@ -14,7 +18,7 @@ export async function login(credentials: Credentials) {
   return userSchema.parse(session)
 }
 
-export async function getMe() {
+export async function getMe(): Promise<User | null> {
   if (!tokenStorage.get()) return null
   try {
     const { data } = await APIAxios(APIRoutes.GETCurrentUser())

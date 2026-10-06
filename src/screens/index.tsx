@@ -1,20 +1,14 @@
-// src/screens/index.tsx
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
+import { useQuery } from "@tanstack/react-query"
+import { sessionQuery } from "@/store/session/session.query"
+import LoadingScreen from "@/screens/loading/Loading.screen"
 import AuthScreen from "@/screens/auth/Auth.screen"
 import UnauthScreen from "@/screens/unauth/Unauth.screen"
 
 const Screens = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const { data: user, isPending } = useQuery(sessionQuery)
 
-  return (
-    <>
-      <Button onClick={() => setIsAuthenticated((stateBool) => !stateBool)}>
-        {isAuthenticated ? "deco" : "connexion"}
-      </Button>
-      {isAuthenticated ? <AuthScreen /> : <UnauthScreen />}
-    </>
-  )
+  if (isPending) return <LoadingScreen />
+  return user ? <AuthScreen /> : <UnauthScreen />
 }
 
 export default Screens

@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Button } from "@/components/ui/button"
 import TextField from "@/components/inputs/TextField.component"
-import { getMe, login } from "@/api/auth.api"
+import { getMe, login } from "@/store/session/session.service"
 import { getErrorMessage } from "@/utils/error.utils"
 import {
   signupSchema,

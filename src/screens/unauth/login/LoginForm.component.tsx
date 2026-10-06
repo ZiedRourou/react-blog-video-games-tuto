@@ -1,10 +1,12 @@
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { Button } from "@/components/ui/button"
 import TextField from "@/components/inputs/TextField.component"
-import { loginSchema, type LoginValues } from "./login.schema"
-import { getMe, login } from "@/api/auth.api"
+import { login } from "@/store/session/session.service"
+import { sessionQuery } from "@/store/session/session.query"
 import { getErrorMessage } from "@/utils/error.utils"
+import { loginSchema, type LoginValues } from "./login.schema"
 
 const LoginForm = () => {
   const {
@@ -17,14 +19,13 @@ const LoginForm = () => {
     mode: "onTouched",
   })
 
-  const onSubmit = async (values: LoginValues) => {
-    try {
-      console.log("login →", await login(values))
-      console.log("getMe →", await getMe())
-    } catch (error) {
-      console.log("erreur →", getErrorMessage(error))
-    }
-  }
+  const queryClient = useQueryClient()
+  const loginMutation = useMutation({
+    mutationFn: login,
+    onSuccess: (user) => queryClient.setQueryData(sessionQuery.queryKey, user),
+  })
+
+  const onSubmit = (values: LoginValues) => loginMutation.mutate(values)
 
   return (
     <form
@@ -47,8 +48,17 @@ const LoginForm = () => {
         error={errors.password?.message}
         {...register("password")}
       />
-      <Button type="submit" className="w-full">
-        Se connecter
+      {loginMutation.isError && (
+        <p role="alert" className="text-sm text-destructive">
+          {getErrorMessage(loginMutation.error)}
+        </p>
+      )}
+      <Button
+        type="submit"
+        disabled={loginMutation.isPending}
+        className="w-full"
+      >
+        {loginMutation.isPending ? "Connexion…" : "Se connecter"}
       </Button>
     </form>
   )
