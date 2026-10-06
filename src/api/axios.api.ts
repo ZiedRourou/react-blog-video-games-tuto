@@ -1,5 +1,4 @@
-import axios, { isAxiosError } from "axios"
-import * as z from "zod"
+import axios, { type AxiosRequestConfig } from "axios"
 
 const TOKEN_KEY = "access_token"
 
@@ -9,40 +8,25 @@ export const tokenStorage = {
   clear: () => localStorage.removeItem(TOKEN_KEY),
 }
 
-export class ApiError extends Error {
-  readonly status: number
+export type RouteConfig = Omit<AxiosRequestConfig, "paramsSerializer">
 
-  constructor(message: string, status: number) {
-    super(message)
-    this.status = status
-  }
-}
-
-export const api = axios.create({
+const APIAxios = axios.create({
   baseURL: import.meta.env.VITE_API_HOST,
   headers: { "Content-Type": "application/json" },
 })
 
-// Avant chaque requête : ajouter le token s'il existe
-api.interceptors.request.use((config) => {
+// Seule différence avec 2iportage : DummyJSON exige le token dans l'en-tête Authorization
+APIAxios.interceptors.request.use((config) => {
   const token = tokenStorage.get()
   if (token) config.headers.Authorization = `Bearer ${token}`
   return config
 })
 
-const errorBodySchema = z.object({ message: z.string() })
+export const APIRoutes = {
+  /* AUTH */
+  POSTLogin: (): RouteConfig => ({ method: "POST", url: "/auth/login" }),
+  GETCurrentUser: (): RouteConfig => ({ method: "GET", url: "/auth/me" }),
+  /* ---- */
+}
 
-// Après chaque réponse en erreur : une ApiError avec le message du serveur
-api.interceptors.response.use(
-  (response) => response,
-  (error: unknown) => {
-    if (isAxiosError(error) && error.response) {
-      const body = errorBodySchema.safeParse(error.response.data)
-      const message = body.success
-        ? body.data.message
-        : `Erreur ${error.response.status}`
-      return Promise.reject(new ApiError(message, error.response.status))
-    }
-    return Promise.reject(error)
-  },
-)
+export default APIAxios

@@ -3,6 +3,8 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { Button } from "@/components/ui/button"
 import TextField from "@/components/inputs/TextField.component"
 import { loginSchema, type LoginValues } from "./login.schema"
+import { getMe, login } from "@/api/auth.api"
+import { getErrorMessage } from "@/utils/error.utils"
 
 const LoginForm = () => {
   const {
@@ -15,7 +17,14 @@ const LoginForm = () => {
     mode: "onTouched",
   })
 
-  const onSubmit = (values: LoginValues) => console.log(values)
+  const onSubmit = async (values: LoginValues) => {
+    try {
+      console.log("login →", await login(values))
+      console.log("getMe →", await getMe())
+    } catch (error) {
+      console.log("erreur →", getErrorMessage(error))
+    }
+  }
 
   return (
     <form

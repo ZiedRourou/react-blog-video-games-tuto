@@ -19,11 +19,11 @@ const LoginScreen = () => (
     <CardContent>
       <LoginForm />
     </CardContent>
-    <CardFooter className="justify-center gap-1 text-sm">
+    <CardFooter className="justify-center gap-1 ">
       Pas de compte ?
       <Link
         to={`/${UnauthRoutes.SIGNUP}`}
-        className="font-medium underline underline-offset-4"
+        className="underline underline-offset-4"
       >
         Créer un compte
       </Link>

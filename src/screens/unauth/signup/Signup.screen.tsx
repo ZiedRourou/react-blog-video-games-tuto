@@ -1,11 +1,22 @@
-import { Link } from "react-router"
-import { UnauthRoutes } from "@/constants/routes.constants.ts"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import SignupFormComponent from "@/screens/unauth/signup/SignupForm.component.tsx"
 
 const SignupScreen = () => (
-  <div>
-    <h1>Inscription</h1>
-    <Link to={`/${UnauthRoutes.LOGIN}`}>Connexion</Link>
-  </div>
+  <Card>
+    <CardHeader>
+      <CardTitle>Connexion</CardTitle>
+      <CardDescription>Inscris toi à ton compte.</CardDescription>
+    </CardHeader>
+    <CardContent>
+      <SignupFormComponent />
+    </CardContent>
+  </Card>
 )
 
 export default SignupScreen
