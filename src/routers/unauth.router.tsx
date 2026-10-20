@@ -2,10 +2,12 @@ import { Navigate, type RouteObject } from "react-router"
 import { UnauthRoutes } from "@/constants/routes.constants.ts"
 import UnauthLayout from "@/components/layout/Unauth.layout.tsx"
 import LoginScreen from "@/screens/unauth/login/Login.screen.tsx"
+import LoadingScreen from "@/screens/loading/Loading.screen.tsx"
 
 const unauthRouter: RouteObject[] = [
   {
     Component: UnauthLayout,
+    HydrateFallback: LoadingScreen,
     children: [
       { path: UnauthRoutes.LOGIN, Component: LoginScreen },
       {

@@ -14,7 +14,11 @@ type PostCardProps = {
 const PostCardComponent = ({ post }: PostCardProps) => (
   <Card className="relative gap-0 py-0 sm:flex-row">
     <div className="relative sm:w-2/5">
-      <img src={post.imageUrl} alt="" className="size-full object-cover " />
+      {post.imageUrl ? (
+        <img src={post.imageUrl} alt="" className="size-full object-cover" />
+      ) : (
+        <div className="size-full min-h-40 bg-muted" />
+      )}
       <Badge
         className={cn(
           "absolute top-2 left-2 uppercase",

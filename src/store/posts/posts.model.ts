@@ -1,26 +1,25 @@
 import * as z from "zod"
+import {
+  POST_CATEGORY_SLUGS,
+  type PostCategory,
+} from "@/constants/categories.constants"
 
-export const postCategories = {
-  FPS: "fps",
-  RPG: "rpg",
-  MMO: "mmo",
-  ESPORT: "esport",
-  RACING: "racing",
-  INDIE: "indie",
-} as const
+export const postCategorySchema = z.enum(POST_CATEGORY_SLUGS)
 
 export const postSchema = z.object({
   id: z.string(),
   title: z.string(),
   excerpt: z.string(),
   content: z.string(),
-  category: z.enum(postCategories),
-  imageUrl: z.string(),
-  author: z.object({
-    id: z.string(),
-    username: z.string(),
-    avatarUrl: z.string(),
-  }),
+  category: postCategorySchema,
+  imageUrl: z.string().nullable(),
+  author: z
+    .object({
+      id: z.string(),
+      username: z.string(),
+      avatarUrl: z.string().nullable(),
+    })
+    .nullable(),
   likesCount: z.number(),
   likedByMe: z.boolean(),
   commentsCount: z.number(),
@@ -28,9 +27,6 @@ export const postSchema = z.object({
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
 })
-
-export type PostCategories =
-  (typeof postCategories)[keyof typeof postCategories]
 
 export type PostType = z.infer<typeof postSchema>
 
@@ -43,6 +39,6 @@ export const postsResponseSchema = z.object({
 })
 
 export type PostFilters = {
-  category?: PostCategories
+  category?: PostCategory
   search?: string
 }

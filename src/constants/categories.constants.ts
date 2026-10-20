@@ -11,3 +11,9 @@ export const POST_CATEGORIES = {
   racing: { name: "Course", badgeClassName: "bg-mauve-500 text-white" },
   indie: { name: "Indé", badgeClassName: "bg-yellow-400 text-yellow-950" },
 } satisfies Record<string, PostCategoryConfig>
+
+export type PostCategory = keyof typeof POST_CATEGORIES
+
+export const POST_CATEGORY_SLUGS = Object.keys(
+  POST_CATEGORIES,
+) as PostCategory[]

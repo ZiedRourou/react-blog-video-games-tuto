@@ -17,6 +17,7 @@ const CategoriesNavComponent = () => (
   <nav className="flex gap-6">
     {LINKS.map(({ to, label }) => (
       <NavLink
+        key={to}
         to={to}
         className={({ isActive }) =>
           isActive ? "text-blue-500" : "text-white"

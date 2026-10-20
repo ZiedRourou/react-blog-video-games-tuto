@@ -3,7 +3,6 @@ import {
   type PostFilters,
   postSchema,
   postsResponseSchema,
-  type PostType,
 } from "@/store/posts/posts.model.ts"
 
 export async function getPosts(postFilters: PostFilters) {
@@ -12,10 +11,6 @@ export async function getPosts(postFilters: PostFilters) {
 }
 
 export async function getPostById(id: string) {
-  const { data, status, request } = await APIAxios(APIRoutes.GETPostDetails(id))
-
-  console.log(status, " test  ")
-  console.log(request)
-
-  return postSchema.parse(data) as PostType
+  const { data } = await APIAxios(APIRoutes.GETPostDetails(id))
+  return postSchema.parse(data)
 }

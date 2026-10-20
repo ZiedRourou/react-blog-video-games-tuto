@@ -1,24 +1,26 @@
 import { useQuery } from "@tanstack/react-query"
 import PageHeaderComponent from "@/components/layout/PageHeader.component"
 import PostCardComponent from "@/screens/auth/home/components/PostCard.component"
-import { postsQuery } from "@/store/posts"
-import type { PostCategories } from "@/store/posts/posts.model"
+import { postCategorySchema, postsQuery } from "@/store/posts"
 import { POST_CATEGORIES } from "@/constants/categories.constants"
-import { useParams } from "react-router"
+import { Navigate, useParams } from "react-router"
+import { AuthRoutes } from "@/constants/routes.constants"
 import LoadingScreen from "@/screens/loading/Loading.screen.tsx"
 import { Card } from "@/components/ui/card"
 import { BadgeCheck, Gamepad2, UserRoundGroup } from "lucide-react"
 
 const HomeScreen = () => {
-  const { category } = useParams()
-  const categoryParam = category as PostCategories | undefined
+  const { category: categoryParam } = useParams()
+  const category = postCategorySchema.safeParse(categoryParam).data
 
-  const { data, isPending, isError } = useQuery(
-    postsQuery({ category: categoryParam }),
-  )
+  const { data, isPending, isError } = useQuery(postsQuery({ category }))
 
-  const title = categoryParam
-    ? `Articles ${POST_CATEGORIES[categoryParam].name}`
+  if (categoryParam && !category) {
+    return <Navigate to={`/${AuthRoutes.HOME}`} replace />
+  }
+
+  const title = category
+    ? `Articles ${POST_CATEGORIES[category].name}`
     : "Derniers articles gaming"
 
   if (isPending) return <LoadingScreen />

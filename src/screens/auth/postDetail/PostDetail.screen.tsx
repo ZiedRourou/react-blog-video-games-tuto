@@ -10,11 +10,7 @@ import { Avatar, AvatarImage } from "@/components/ui/avatar.tsx"
 
 const PostDetailScreen = () => {
   const { postId } = useParams()
-  const {
-    data: post,
-    isPending,
-    isError,
-  } = useQuery(postDetailQuery(postId ?? "e"))
+  const { data: post, isPending, isError } = useQuery(postDetailQuery(postId))
 
   if (isPending) return <LoadingScreen />
 
@@ -54,25 +50,29 @@ const PostDetailScreen = () => {
         {post.title}
       </h1>
 
-      <div className="flex items-center gap-3">
-        <Avatar className="size-10">
-          <AvatarImage
-            src={post.author.avatarUrl ?? undefined}
-            alt={post.author.username}
-          />
-        </Avatar>
-        <div className="flex flex-col">
-          <span>{post.author.username}</span>
-          <span className="text-xs ">Auteur</span>
+      {post.author && (
+        <div className="flex items-center gap-3">
+          <Avatar className="size-10">
+            <AvatarImage
+              src={post.author.avatarUrl ?? undefined}
+              alt={post.author.username}
+            />
+          </Avatar>
+          <div className="flex flex-col">
+            <span>{post.author.username}</span>
+            <span className="text-xs ">Auteur</span>
+          </div>
         </div>
-      </div>
-      <div className="w-full rounded-lg overflow-hidden ">
-        <img
-          src={post.imageUrl}
-          alt={post.title}
-          className="h-full w-full object-cover"
-        />
-      </div>
+      )}
+      {post.imageUrl && (
+        <div className="w-full rounded-lg overflow-hidden ">
+          <img
+            src={post.imageUrl}
+            alt={post.title}
+            className="h-full w-full object-cover"
+          />
+        </div>
+      )}
       <div className="text-slate-300 text-justify">{post.content}</div>
     </div>
   )
