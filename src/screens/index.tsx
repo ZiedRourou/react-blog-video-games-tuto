@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query"
-import { sessionQuery } from "@/store/session/session.query"
+import { sessionQuery } from "@/store/session"
 import LoadingScreen from "@/screens/loading/Loading.screen"
 import AuthScreen from "@/screens/auth/Auth.screen"
 import UnauthScreen from "@/screens/unauth/Unauth.screen"

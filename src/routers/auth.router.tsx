@@ -9,6 +9,15 @@ const authRouter: RouteObject[] = [
     children: [
       { path: AuthRoutes.HOME, Component: HomeScreen },
       {
+        path: `${AuthRoutes.POSTS}/:postId`,
+        lazy: async () => {
+          const postDetailModule =
+            await import("@/screens/auth/postDetail/PostDetail.screen")
+          return { Component: postDetailModule.default }
+        },
+      },
+      { path: `${AuthRoutes.CATEGORIES}/:category`, Component: HomeScreen },
+      {
         path: "*",
         element: <Navigate to={`/${AuthRoutes.HOME}`} replace />,
       },

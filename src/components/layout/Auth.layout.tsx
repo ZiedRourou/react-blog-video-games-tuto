@@ -1,14 +1,14 @@
 import { Outlet } from "react-router"
+import Header from "@/components/layout/Header.component"
 
-const AuthLayoutComponent = () => (
-  <>
-    <div className="flex min-h-svh items-center justify-center p-6">
-      <header>blog </header>
-      <div className="w-full max-w-sm">
+const AuthLayoutComponent = () => {
+  return (
+    <div className="flex min-h-svh flex-col">
+      <Header />
+      <main className="flex-1">
         <Outlet />
-      </div>
+      </main>
     </div>
-  </>
-)
-
+  )
+}
 export default AuthLayoutComponent

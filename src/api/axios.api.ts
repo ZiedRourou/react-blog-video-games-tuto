@@ -1,12 +1,6 @@
 import axios, { type AxiosRequestConfig } from "axios"
-
-const TOKEN_KEY = "access_token"
-
-export const tokenStorage = {
-  get: () => localStorage.getItem(TOKEN_KEY),
-  set: (token: string) => localStorage.setItem(TOKEN_KEY, token),
-  clear: () => localStorage.removeItem(TOKEN_KEY),
-}
+import { tokenStorage } from "@/utils/token.utils"
+import type { PostFilters } from "@/store/posts"
 
 export type RouteConfig = Omit<AxiosRequestConfig, "paramsSerializer">
 
@@ -15,18 +9,27 @@ const APIAxios = axios.create({
   headers: { "Content-Type": "application/json" },
 })
 
-// Seule différence avec 2iportage : DummyJSON exige le token dans l'en-tête Authorization
 APIAxios.interceptors.request.use((config) => {
   const token = tokenStorage.get()
   if (token) config.headers.Authorization = `Bearer ${token}`
   return config
 })
 
+APIAxios.interceptors.response.use()
+
 export const APIRoutes = {
-  /* AUTH */
   POSTLogin: (): RouteConfig => ({ method: "POST", url: "/auth/login" }),
   GETCurrentUser: (): RouteConfig => ({ method: "GET", url: "/auth/me" }),
-  /* ---- */
+  POSTSignup: (): RouteConfig => ({ method: "POST", url: "/auth/register" }),
+  GETBlogPosts: (postFilters: PostFilters): RouteConfig => ({
+    method: "GET",
+    url: "/articles",
+    params: postFilters,
+  }),
+  GETPostDetails: (id: string): RouteConfig => ({
+    method: "GET",
+    url: `/articles/${id}`,
+  }),
 }
 
 export default APIAxios

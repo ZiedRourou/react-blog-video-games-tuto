@@ -5,6 +5,8 @@ export const UnauthRoutes = {
 
 export const AuthRoutes = {
   HOME: "home",
+  POSTS: "posts",
+  CATEGORIES: "categories",
 } as const
 
 export type UnauthRoute = (typeof UnauthRoutes)[keyof typeof UnauthRoutes]

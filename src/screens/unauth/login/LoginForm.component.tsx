@@ -1,10 +1,9 @@
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useMutation } from "@tanstack/react-query"
 import { Button } from "@/components/ui/button"
 import TextField from "@/components/inputs/TextField.component"
-import { login } from "@/store/session/session.service"
-import { sessionQuery } from "@/store/session/session.query"
+import { login, sessionStore } from "@/store/session"
 import { getErrorMessage } from "@/utils/error.utils"
 import { loginSchema, type LoginValues } from "./login.schema"
 
@@ -19,10 +18,9 @@ const LoginForm = () => {
     mode: "onTouched",
   })
 
-  const queryClient = useQueryClient()
   const loginMutation = useMutation({
     mutationFn: login,
-    onSuccess: (user) => queryClient.setQueryData(sessionQuery.queryKey, user),
+    onSuccess: (user) => sessionStore.setUser(user),
   })
 
   const onSubmit = (values: LoginValues) => loginMutation.mutate(values)
@@ -31,7 +29,7 @@ const LoginForm = () => {
     <form
       onSubmit={handleSubmit(onSubmit)}
       noValidate
-      className="flex flex-col gap-4"
+      className="flex flex-col gap-4  bg"
     >
       <TextField
         id="username"

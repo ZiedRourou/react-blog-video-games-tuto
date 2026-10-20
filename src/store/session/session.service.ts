@@ -1,24 +1,25 @@
 import { isAxiosError } from "axios"
-import APIAxios, { APIRoutes, tokenStorage } from "@/api/axios.api"
+import APIAxios, { APIRoutes } from "@/api/axios.api"
+import { tokenStorage } from "@/utils/token.utils"
 import {
-  loginResponseSchema,
   userSchema,
-  type User,
+  type SignupPayload,
+  type LoginPayload,
+  authResponseSchema,
 } from "@/store/session/session.model"
+import { sessionStore } from "@/store/session/session.store.ts"
 
-type Credentials = { username: string; password: string }
-
-export async function login(credentials: Credentials): Promise<User> {
+export async function login(loginPayload: LoginPayload) {
   const { data } = await APIAxios({
     ...APIRoutes.POSTLogin(),
-    data: credentials,
+    data: loginPayload,
   })
-  const session = loginResponseSchema.parse(data)
+  const session = authResponseSchema.parse(data)
   tokenStorage.set(session.accessToken)
-  return userSchema.parse(session)
+  return session.user
 }
 
-export async function getMe(): Promise<User | null> {
+export async function getMe() {
   if (!tokenStorage.get()) return null
   try {
     const { data } = await APIAxios(APIRoutes.GETCurrentUser())
@@ -28,6 +29,28 @@ export async function getMe(): Promise<User | null> {
       tokenStorage.clear()
       return null
     }
+
     throw error
   }
+}
+
+export async function signup({
+  username,
+  email,
+  password,
+  firstName,
+  lastName,
+}: SignupPayload) {
+  const { data } = await APIAxios({
+    ...APIRoutes.POSTSignup(),
+    data: { username, email, password, firstName, lastName },
+  })
+  const session = authResponseSchema.parse(data)
+  tokenStorage.set(session.accessToken)
+  return session.user
+}
+
+export function logout() {
+  tokenStorage.clear()
+  sessionStore.setUser(null)
 }
